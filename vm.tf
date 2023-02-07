@@ -35,7 +35,7 @@ resource "azurerm_public_ip" "pubip" {
   name                = var.publicipname
   resource_group_name = azurerm_resource_group.example.name
   location            = azurerm_resource_group.example.location
-  allocation_method   = "Static"
+  allocation_method   = "Dynamic"
   
 }
 
@@ -92,7 +92,7 @@ resource "azurerm_virtual_machine" "main" {
   location              = azurerm_resource_group.example.location
   resource_group_name   = azurerm_resource_group.example.name
   network_interface_ids = [azurerm_network_interface.buildagent.id]
-  vm_size               = "Standard_A2_v2"
+  vm_size               = "Standard_B1s"
 
    delete_os_disk_on_termination = true
 
@@ -100,9 +100,9 @@ resource "azurerm_virtual_machine" "main" {
 
 #USe Az vm image list to identify correct parameter more  visit https://learn.microsoft.com/en-us/cli/azure/vm/image?source=recommendations&view=azure-cli-latest
   storage_image_reference {
-    publisher = "MicrosoftWindowsServer"
-    offer     = "WindowsServer"
-    sku       = "2019-Datacenter"
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
     version   = "latest"
   }
   storage_os_disk {
@@ -117,10 +117,15 @@ resource "azurerm_virtual_machine" "main" {
     admin_password = "Thamalaka@123"
   }
 
-  os_profile_windows_config {
+  #Disbale IF Linux
+  /*os_profile_windows_config {
     enable_automatic_upgrades = false
-  }
+  }*/
  
+
+ os_profile_linux_config {
+   disable_password_authentication = false
+ }
   tags = {
     environment = "staging"
   }
