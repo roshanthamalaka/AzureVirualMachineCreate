@@ -96,7 +96,7 @@ resource "azurerm_virtual_machine" "main" {
 
    delete_os_disk_on_termination = true
 
- 
+ #Added A Comment
 
 #USe Az vm image list to identify correct parameter more  visit https://learn.microsoft.com/en-us/cli/azure/vm/image?source=recommendations&view=azure-cli-latest
   storage_image_reference {
