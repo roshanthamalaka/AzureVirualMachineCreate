@@ -13,12 +13,15 @@ variable "publicipname" {
 variable "vmname" {
   default= "buildagent"
 }
+
 #Create Virtual Network 
 resource "azurerm_virtual_network" "main" {
   name                = var.vnet_name
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
+
+  depends_on =[resource.azurerm_resource_group.example]
 }
 
 resource "azurerm_subnet" "public" {
@@ -26,6 +29,7 @@ resource "azurerm_subnet" "public" {
   resource_group_name  = azurerm_resource_group.example.name
   virtual_network_name = azurerm_virtual_network.main.name
   address_prefixes     = ["10.0.2.0/24"]
+  depends_on = [resource.azurerm_virtual_network.main]
 }
 
 
@@ -101,8 +105,8 @@ resource "azurerm_virtual_machine" "main" {
 #USe Az vm image list to identify correct parameter more  visit https://learn.microsoft.com/en-us/cli/azure/vm/image?source=recommendations&view=azure-cli-latest
   storage_image_reference {
     publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts-gen2"
     version   = "latest"
   }
   storage_os_disk {
