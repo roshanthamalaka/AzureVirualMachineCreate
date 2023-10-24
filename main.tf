@@ -9,9 +9,15 @@ data "azurerm_resource_group" "rg" {
   name = "DCA_Exam_Practise"
 }
 
+provider "azurerm" {
+  features {
+    
+  }
+}
+
 data "azurerm_subnet" "pubsub" {
   name                 = "public1"
-  virtual_network_name = "dca_vnet "
+  virtual_network_name = "dca_vnet"
   resource_group_name  = "DCA_Exam_Practise"
 }
 
@@ -39,15 +45,15 @@ resource "azurerm_network_interface" "main" {
 
 resource "azurerm_virtual_machine" "main" {
   name                  = "${var.vmnames[count.index]}-vm"
-  location              = azurerm_resource_group.example.location
-  resource_group_name   = azurerm_resource_group.example.name
-  network_interface_ids = [azurerm_network_interface.main.id[count.index]]
+  location              = data.azurerm_resource_group.rg.location
+  resource_group_name   = data.azurerm_resource_group.rg.name
+  network_interface_ids = [azurerm_network_interface.main[count.index].id]
   vm_size               = "Standard_B1s"
 
   #Enable Boot Diagnostics
   boot_diagnostics {
     enabled = true
-    storage_uri = data.azurerm_storage_account.stgacc.primary_blob_endpoint
+    storage_uri = data.azurerm_storage_account.strgacc.primary_blob_endpoint
   }
 
   # Uncomment this line to delete the data disks automatically when deleting the VM
